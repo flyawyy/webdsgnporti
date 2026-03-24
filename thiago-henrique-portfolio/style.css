@@ -1,0 +1,890 @@
+:root {
+    --bg-dark: #000000;
+    --bg-frame: #ffffff;
+    --text-primary: #ffffff;
+    --text-dim: rgba(255, 255, 255, 0.45);
+    --bg-card: #ffffff;
+    --text-card: #090909;
+    
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --card-border: rgba(255, 255, 255, 0.12);
+    --card-border-hover: rgba(255, 255, 255, 0.3);
+    
+    /* Clean easing function for smooth animations */
+    --smooth-ease: cubic-bezier(0.25, 1, 0.5, 1);
+    --fast-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ================= PRELOADER & PAGE TRANSITIONS ================= */
+.preloader {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+    pointer-events: all;
+}
+
+.liquid-loader {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.05);
+    background: #111;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+.water-fill {
+    position: absolute;
+    width: 250%; /* Larger for cleaner waves */
+    height: 250%;
+    left: 50%;
+    transform-origin: center;
+    top: 100%; /* JS drives this from 100% (empty) to -100% (full) */
+    background: #ffffff; /* Water */
+    border-radius: 42%;
+    animation: waveSpinner 5s infinite linear;
+    transition: top 0.4s linear;
+    margin-left: -125%;
+}
+
+.water-fill::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(255,255,255,0.4); /* Secondary wave for depth */
+    border-radius: 40%;
+    animation: waveSpinner 7s infinite linear reverse;
+}
+
+@keyframes waveSpinner {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.preloader.slide-up {
+    transform: translateY(-100%);
+    pointer-events: none;
+}
+
+.page-sweep {
+    position: fixed;
+    bottom: -100vh;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: #0c0c0c;
+    z-index: 999998;
+    transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1);
+}
+
+.page-sweep.active {
+    transform: translateY(-100vh);
+}
+
+.page-sweep.exit {
+    transform: translateY(-200vh);
+}
+
+html {
+    scroll-behavior: smooth;
+    background: #ffffff;
+}
+
+body {
+    background-color: #ffffff; /* Page goes white */
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+/* ================= FLOATING NAVIGATION (LIQUID GLASS) ================= */
+.floating-nav {
+    position: fixed;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99999;
+    transition: all 0.6s var(--smooth-ease);
+}
+
+/* Removed minimalist shrink on footer per user request */
+
+.nav-container {
+    padding: 0.6rem 1rem 0.6rem 2.8rem; /* Balanced for link-first pílula */
+    display: flex;
+    align-items: center;
+    gap: 4rem; 
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(25px);
+    transition: all 0.6s var(--smooth-ease);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.logo-wrapper {
+    cursor: pointer;
+    z-index: 999;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+}
+
+.star-logo {
+    display: block;
+    font-size: 2.22rem; 
+    font-weight: 800;
+    line-height: 1;
+    text-align: center;
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), 
+                background 0.8s ease, 
+                filter 0.8s ease;
+    background: #ffffff;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.logo-wrapper:hover .star-logo {
+    transform: rotate(90deg) scale(1.1);
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #764ba2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    filter: drop-shadow(0 0 12px rgba(79, 172, 254, 0.6));
+}
+
+.nav-star { display: none; } /* Removed from pill */
+
+.nav-links-wrapper {
+    display: flex;
+    gap: 4.5rem; /* Increased spacing as requested */
+}
+
+.nav-links-wrapper a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.nav-links-wrapper a:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+}
+
+.nav-cta {
+    background: #ffffff;
+    color: #000000 !important;
+    padding: 0.7rem 1.8rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: transform 0.3s, background 0.3s;
+    opacity: 1 !important;
+}
+
+.nav-cta:hover {
+    transform: scale(1.05);
+    background: #f0f0f0;
+}
+
+/* SCROLLED / INVERTED STATE (Dark links for white bg) */
+.floating-nav.scrolled .nav-container {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+.floating-nav.scrolled .nav-links-wrapper a { color: #000000; }
+.floating-nav.scrolled .nav-star { color: #000000; }
+.floating-nav.scrolled .nav-cta { background: #000000; color: #ffffff !important; }
+
+.liquid-glass {
+    position: relative;
+    overflow: hidden;
+}
+
+.liquid-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.05), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+}
+
+.nav-container:hover::before {
+    transform: translateX(100%);
+}
+
+/* ================= LAYOUT WRAPPER ================= */
+.app-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    padding-bottom: 24px;
+}
+
+.main-content {
+    position: relative;
+    width: 100%;
+}
+
+/* ================= 3D BACKGROUND ================= */
+.bg-container {
+    position: absolute; /* Tied to heroic bounds */
+    inset: 0; 
+    border-radius: 40px; /* Huge curvature */
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.fade-in-bg {
+    opacity: 0;
+    animation: bgEnter 2s ease-out forwards;
+}
+
+@keyframes bgEnter {
+    from { opacity: 0; transform: scale(1.05); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.bg-image {
+    position: absolute;
+    inset: -20px; /* Slight overflow for pan effects */
+    background: url('abstract_3d_background_dark_futuristic_png_1774359186938.png') center/cover no-repeat;
+    opacity: 0.7;
+    filter: contrast(1.1) brightness(0.7);
+}
+
+.liquid-mesh {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(200, 200, 255, 0.05) 0%, transparent 60%);
+    mix-blend-mode: screen;
+}
+
+/* ================= HERO SECTION ================= */
+.hero-section {
+    min-height: calc(100vh - 24px);
+    background-color: var(--bg-dark); /* Solid interior */
+    margin: 12px 12px 30vh 12px; /* Bottom spacer delays the white overlap */
+    border-radius: 40px; /* High curvature */
+    overflow: hidden; /* Clips elements gently matching curve */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+    /* STICKY PARALLAX SETUP */
+    position: sticky;
+    top: 12px;
+    z-index: 10;
+    transform-origin: top center;
+    will-change: transform, filter;
+
+    padding-bottom: 2rem;
+}
+
+/* Header */
+.header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2.5rem 3.5rem;
+}
+
+.logo-wrapper {
+    cursor: pointer;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    user-select: none;
+    color: var(--bg-frame);
+    transition: transform 0.4s var(--smooth-ease);
+}
+/* Cleanup of old logo rules that override star animation */
+
+.nav-links { display: none; } /* Moved to floating-nav */
+
+/* Clean Button */
+.btn-primary {
+    background: var(--bg-frame);
+    color: var(--bg-dark);
+    padding: 0.9rem 1.8rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.3s var(--smooth-ease), background 0.3s ease;
+    will-change: transform;
+}
+.btn-primary:hover {
+    background: #e0e0e0;
+}
+
+/* Center Text */
+.hero-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.giant-text {
+    font-size: clamp(6rem, 18vw, 20rem);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    margin: 0;
+    text-align: center;
+    color: #ffffff;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Faster, no delay */
+    cursor: default;
+    user-select: none;
+}
+
+.giant-text:hover {
+    color: transparent;
+    -webkit-text-stroke: 0.3px rgba(255, 255, 255, 1); /* Razor-thin 0.3px white stroke */
+    letter-spacing: -0.02em; /* Clean, subtle expansion */
+}
+
+/* Bottom Stats */
+.bottom-stats {
+    padding: 0 3.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.stats-row {
+    display: flex;
+    gap: 3rem;
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+.bottom-columns {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.left-col p {
+    font-size: clamp(1.2rem, 1.8vw, 1.8rem);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    max-width: 650px;
+}
+
+.left-col p .dim {
+    color: var(--text-dim);
+}
+
+/* ================= FLOATING PROFILE WIDGET ================= */
+.floating-profile-card {
+    position: fixed;
+    bottom: 2.5rem;
+    right: 3rem;
+    z-index: 9999;
+    
+    /* Soft entrance animation */
+    animation: cleanFadeUp 1s var(--smooth-ease) forwards;
+    animation-delay: 1.2s; /* Comes in after everything else */
+    opacity: 0;
+}
+
+.profile-card {
+    background: #cecece; /* Matching the user's image exactly */
+    color: #050505;
+    width: 280px;
+    border-radius: 20px;
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.05);
+    overflow: hidden;
+    transition: all 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+}
+
+.floating-profile-card .profile-img-wrapper {
+    height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    opacity: 1;
+    transition: all 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+}
+
+.profile-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;        /* Never stretches — always crops to fill */
+    object-position: center top; /* Keeps the face visible */
+    display: block;
+}
+
+.floating-profile-card .profile-info {
+    max-height: 100px;
+    opacity: 1;
+    transition: all 0.6s cubic-bezier(0.8, 0, 0.2, 1);
+}
+
+/* MINIMALIST SCROLL STATE */
+.floating-profile-card.minimal .profile-card {
+    width: 210px;
+    gap: 0;
+    padding: 0.5rem;
+    border-radius: 50px;
+}
+
+.floating-profile-card.minimal .profile-img-wrapper {
+    height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+.floating-profile-card.minimal .profile-info {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+}
+
+.floating-profile-card .role {
+    color: rgba(0,0,0,0.6); /* Darker role text for contrast */
+}
+
+
+.profile-img-placeholder {
+    width: 100%;
+    height: 170px;
+    border-radius: 10px;
+    background: url('media__1774358578270.jpg') center/cover no-repeat; 
+}
+
+/* Gentle steady floating image internal effect */
+.float-anim {
+    animation: slowFloatImg 8s ease-in-out infinite alternate;
+}
+@keyframes slowFloatImg {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-3px); }
+}
+
+.profile-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.profile-info .role {
+    font-size: 0.75rem;
+    line-height: 1.25;
+    color: rgba(0,0,0,0.5);
+    font-weight: 600;
+}
+
+.profile-info h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin: 0;
+}
+
+.btn-dark {
+    background: #000;
+    color: #fff;
+    border-radius: 50px;
+    padding: 0.8rem 1.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    will-change: transform;
+    transition: background 0.3s;
+}
+.btn-dark:hover {
+    background: #222;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+
+/* ================= PROJECTS BENTO GRID ================= */
+.projects-section {
+    position: relative;
+    z-index: 10;
+    padding: 10rem 3.5rem 4rem 3.5rem; /* Reduced bottom padding to close the gap */
+    background: #f8f8f8; /* Pure Nixtio light section background */
+    color: #000000;
+}
+
+.projects-header {
+    margin-bottom: 4rem;
+}
+
+.section-title {
+    font-size: 3.8rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    margin-bottom: 1rem;
+    color: #000000;
+}
+
+.section-subtitle {
+    font-size: 1.3rem;
+    color: #555555;
+    letter-spacing: -0.01em;
+}
+
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 26rem;
+    gap: 1.5rem;
+}
+
+.bento-card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-decoration: none;
+    color: #000000;
+    transition: transform 0.4s var(--smooth-ease);
+}
+
+.bento-card.large { grid-column: span 2; grid-row: span 2; }
+.bento-card.medium { grid-column: span 1; grid-row: span 1; }
+.bento-card.wide { grid-column: span 2; grid-row: span 1; }
+
+.bento-image {
+    position: absolute;
+    inset: -5%; /* Small overflow for clean scale */
+    width: 110%; height: 110%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 0.8;
+    transition: transform 0.6s var(--smooth-ease), opacity 0.4s;
+    z-index: 0;
+}
+
+.bento-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 20%, rgba(0,0,0,0.85) 100%);
+    z-index: 1;
+}
+
+.bento-border {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 20px;
+    z-index: 5;
+    pointer-events: none;
+    transition: border-color 0.4s;
+}
+
+.bento-content {
+    position: relative;
+    z-index: 2;
+    transform: translateY(15px);
+    transition: transform 0.4s var(--smooth-ease);
+    color: #ffffff;
+}
+
+.bento-tags {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+}
+
+.tag {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 0.4rem 0.9rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #ffffff;
+}
+
+.bento-content h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.6rem;
+}
+
+.bento-content p {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.5;
+    opacity: 0;
+    transition: opacity 0.4s var(--smooth-ease);
+}
+
+/* Clean Hover Physics */
+.bento-card:hover { transform: translateY(-5px); }
+.bento-card:hover .bento-image { opacity: 1; transform: scale(1.02); }
+.bento-card:hover .bento-border { border-color: rgba(0,0,0,0.15); }
+.bento-card:hover .bento-content { transform: translateY(0); }
+.bento-card:hover .bento-content p { opacity: 1; }
+
+/* ================= FOOTER ================= */
+.footer-section {
+    padding: 4rem 3.5rem 8rem 3.5rem; /* Reduced top padding for a cleaner reveal */
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    background: #050505; 
+    margin: 0 12px;
+    border-radius: 40px; /* Same high curvature floating block */
+    overflow: hidden;
+    color: #ffffff;
+    
+    /* Reveal Animation Properties */
+    transform: translateY(80px) scale(0.95);
+    opacity: 0;
+    transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 1s ease, filter 0.8s ease;
+}
+
+.footer-section.footer-revealed {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* FOOTER AMBIENT HOVER */
+.footer-section .footer-content {
+    position: relative;
+    z-index: 5;
+}
+
+.footer-section .liquid-mesh {
+    opacity: 0.1; /* Subtle ambient flow */
+    transition: opacity 0.6s ease;
+}
+
+.footer-section:hover .liquid-mesh {
+    opacity: 0.25;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3.5rem;
+}
+
+.footer-title {
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+}
+
+.social-pills {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.social-pill {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 1.2rem 2.5em;
+    border-radius: 50px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    transition: background 0.3s, border-color 0.3s;
+    will-change: transform;
+}
+
+.social-pill:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.25);
+}
+
+.copyright {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    margin-top: 2rem;
+}
+
+/* ================= CLEAN FADE-IN ENTRANCE ANIMATIONS ================= */
+/* Base initial states */
+.reveal-fade-up, .reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(30px); /* Clean, gentle offset */
+}
+
+/* Animation trigger for Hero items (loads strictly AFTER preloader finishes) */
+body.loaded .hero-section .reveal-fade-up {
+    animation: cleanFadeUp 1.2s var(--smooth-ease) forwards;
+}
+
+/* Animation trigger for Scroll items */
+.reveal-on-scroll.is-visible {
+    animation: cleanFadeUp 1s var(--smooth-ease) forwards;
+}
+
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.45s; }
+
+@keyframes cleanFadeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================= CLEAN MOBILE RESPONSIVENESS ================= */
+@media (max-width: 1024px) {
+    .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .bento-card.wide { grid-column: span 2; }
+    .bento-card.large { grid-column: span 1; grid-row: span 1; }
+    .bottom-stats { flex-direction: column; gap: 2rem; }
+    .bottom-columns { flex-direction: column; align-items: flex-start; gap: 2.5rem; }
+    .right-col { transform: none; }
+}
+
+@media (max-width: 768px) {
+    /* Mobile Responsive Curves */
+    .hero-section { 
+        margin: 6px 6px 20vh 6px; 
+        border-radius: 20px; 
+        min-height: calc(100vh - 12px); 
+    }
+    .app-wrapper { padding-bottom: 12px; }
+    .bg-container { border-radius: 20px; }
+    .footer-section { 
+        margin: 0 6px; 
+        border-radius: 20px; 
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .floating-profile-card {
+        right: 1rem;
+        bottom: 1rem;
+        transform: scale(0.8);
+        transform-origin: bottom right;
+    }
+    
+    .header { padding: 1.5rem 1rem; }
+    .bottom-stats, .projects-section, .footer-section { padding: 2rem 1rem; }
+    
+    .logo { font-size: 1.8rem; }
+    /* Hide navlinks under mobile for simplicity, or we could add a burger. Keeping it clean. */
+    .nav-links { display: none; }
+    
+    /* Bento Grid Mobile */
+    .bento-grid {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 20rem; /* Tighter rows on mobile */
+    }
+    .bento-card.wide, .bento-card.large, .bento-card.medium { 
+        grid-column: span 1; 
+        grid-row: span 1;
+    }
+
+    /* Typography scale */
+    .left-col p { font-size: 1.2rem; }
+    .section-title { font-size: 2.5rem; }
+    .footer-title { font-size: 2rem; }
+    
+    .profile-card { width: 100%; max-width: 350px; }
+    
+    .floating-nav { top: 1rem; width: 95%; max-width: 400px; }
+    .nav-container { padding: 0.5rem 1rem; gap: 1rem; justify-content: space-between; }
+    .nav-links-wrapper { gap: 1rem; }
+    .nav-star { font-size: 1.1rem; }
+    .nav-cta { padding: 0.5rem 1rem; font-size: 0.8rem; }
+    
+    .social-pills { flex-direction: column; gap: 1rem; }
+    .social-pill { width: 100%; text-align: center; }
+}
+/* Page Sweep Transition - White Per User Request */
+.page-sweep {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000; /* Flipped back to black per user request */
+    z-index: 10000;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1); /* Slower, more cinematic sweep */
+    pointer-events: none;
+}
+.page-sweep.active {
+    transform: scaleY(1);
+    transform-origin: bottom;
+}
+.page-sweep.exit {
+    transform: scaleY(0);
+    transform-origin: top;
+}
